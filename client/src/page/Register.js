@@ -30,12 +30,14 @@ export default class Register extends React.Component {
     }
 
     handleRegister = () =>{
-        const {contract} = this.state;
+        const {accounts, contract} = this.state;
         const file_data = "{}";
         let account = this.refs.account.value;
         let password = this.refs.password.value;
         console.log(account+"---"+password)
-        const response = contract.methods.register(account,password,file_data).call();
+        const response = contract.methods.register(account,password,file_data).send({ from: accounts[0] }).then(function(result){
+            console.log(result)
+        });
         console.log(response)
     }
 
