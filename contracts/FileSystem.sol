@@ -5,7 +5,8 @@ contract FileSystem {
     mapping(string => string) private user_data_map;
     //账户->密码MD5
     mapping(string => string) private user_pwd_map;
-
+    
+    event RegisterEvent(int code, string msg);
 
     /* 
      * 方法：判断账号是否存在
@@ -27,11 +28,13 @@ contract FileSystem {
      */
     function register(string memory account, string memory password, string memory file_data) public returns(int,string memory){
         if(isAccountExist(account)){
+            emit RegisterEvent(500,"账号已存在");
             return (500,"账号已存在");
         }else{
             //TODO 注册账号格式校验
             user_pwd_map[account] = password;
             user_data_map[account] = file_data;
+            emit RegisterEvent(200,"注册成功");
             return (200,"注册成功");
         }
     }
