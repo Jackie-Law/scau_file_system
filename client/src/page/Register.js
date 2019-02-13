@@ -2,10 +2,11 @@ import React from "react";
 import getWeb3 from "../utils/getWeb3";
 import FileSystemContract from "../contracts/FileSystem.json";
 import {
-    Form, Icon, Input, Button,
+    Form, Icon, Input, Button, message
 } from 'antd';
 import '../../node_modules/antd/dist/antd.css';
 import '../style/Register.css';
+import {aesEncrypt} from '../utils/cipherUtil.js';
 
 class Register extends React.Component {
     state = {
@@ -68,12 +69,24 @@ class Register extends React.Component {
 
     handleRegister = (values) =>{
         const {accounts, contract} = this.state;
-        const file_data = "{}";
+        const file_data = "{abcdefghijklmnopqrstuvwxyzabcde}";
         let account = values.userName;
         let password = values.password;
+        let encryptedData = aesEncrypt(file_data,password);
+        console.log(encryptedData)
         // console.log(account+"---"+password)
-        contract.methods.register(account,password,file_data).send({ from: accounts[0] }).then((result)=>{
-            console.log(result);
+        contract.methods.register(account,password,file_data).send({ from: accounts[0], gas: 200000 }).then((result)=>{
+            console.log(result)
+            let resultCode = result.events.RegisterEvent.returnValues[0];
+            let resultMsg = result.events.RegisterEvent.returnValues[1];
+            // console.log(resultCode+'----'+resultMsg)
+            if(resultCode==200){
+                console.log('注册成功')
+                //跳转到登录界面
+            }else{
+                // console.log(resultMsg)
+                message.info(resultMsg);
+            }
         })
     }
 
