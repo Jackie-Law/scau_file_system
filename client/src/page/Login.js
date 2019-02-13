@@ -36,8 +36,23 @@ class Login extends React.Component {
 
     handleLogin = (values) => {
         const { contract } = this.state;
-        const response = contract.methods.login(values.userName).call();
-        console.log(response)
+        contract.methods.login(values.userName).call().then((result)=>{
+            let resultCode = result[0];
+            let resultData = result[1];
+            if(resultCode==200){
+                //请求成功
+                try{
+                    if(resultData.length<=0){
+                        throw new Error('账号或密码错误');
+                    }else{
+                        //使用密码解密
+                        console.log('未实现解密')
+                    }
+                }catch(e){
+                    console.log(e)
+                }
+            }
+        })
     }
 
     handleSubmit = (e) => {
@@ -56,7 +71,7 @@ class Login extends React.Component {
             <div className="login">
                 <div className="login-form">
                     <div className="login-logo">
-                        <div className="login-name">区块链文件系统</div>
+                        <div className="login-name">区块链文件系统-账号登录</div>
                     </div>
                     <Form onSubmit={this.handleSubmit} className="login-form">
                         <Form.Item>
