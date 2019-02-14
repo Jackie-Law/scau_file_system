@@ -6,7 +6,7 @@ import Register from "../page/Register";
 import UserCenter from "../page/UserCenter";
 
 const Root = () => (
-    <div>
+    <div id="route">
         <Switch>
             <Route render={ props =>(
                 <App>

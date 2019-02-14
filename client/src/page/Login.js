@@ -51,6 +51,9 @@ class Login extends React.Component {
                         getTextFromIpfs(resultData).then((response)=>{
                             let decode = aesDecrypt(response,values.password);
                             //解密成功
+                            window.sessionStorage.setItem('file_tree_json',decode);
+                            //跳转到用户树页面
+                            window.location.href = '/user_center';
                             console.log(decode)
                         }).catch((err)=>{
                             console.log('解密失败');
