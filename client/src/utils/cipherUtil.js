@@ -14,4 +14,10 @@ function aesDecrypt(encrypted, key) {
     return decrypted;
 }
 
-export {aesEncrypt, aesDecrypt}
+function sha256Encrypt(data,salt){
+    const hmac = crypto.createHmac('sha256',salt);
+    hmac.update(data);
+    return hmac.digest('hex');
+}
+
+export {aesEncrypt, aesDecrypt, sha256Encrypt}

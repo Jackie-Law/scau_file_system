@@ -6,17 +6,18 @@ import {
 } from 'antd';
 import '../../node_modules/antd/dist/antd.css';
 import '../style/Register.css';
-import {aesEncrypt} from '../utils/cipherUtil.js';
+import { aesEncrypt, sha256Encrypt } from '../utils/cipherUtil.js';
+import { saveTextBlobOnIpfs } from '../utils/ipfsIOUtil'
 
 class Register extends React.Component {
     state = {
-        web3:null,
+        web3: null,
         contract: null,
         confirmDirty: false
     };
 
-    componentDidMount = async() => {
-        try{
+    componentDidMount = async () => {
+        try {
             const web3 = await getWeb3();
             const accounts = await web3.eth.getAccounts();
             const networkId = await web3.eth.net.getId();
@@ -26,9 +27,9 @@ class Register extends React.Component {
                 deployedNetwork && deployedNetwork.address,
             );
             this.setState({
-                web3,accounts,contract:instance
+                web3, accounts, contract: instance
             })
-        }catch(error){
+        } catch (error) {
             alert(
                 `Failed to load web3, accounts, or contract. Check console for details.`,
             );
@@ -39,16 +40,16 @@ class Register extends React.Component {
     compareToFirstPassword = (rule, value, callback) => {
         const form = this.props.form;
         if (value && value !== form.getFieldValue('password')) {
-          callback('两次输入的密码不一致!');
+            callback('两次输入的密码不一致!');
         } else {
-          callback();
+            callback();
         }
     }
-    
+
     validateToNextPassword = (rule, value, callback) => {
         const form = this.props.form;
         if (value && this.state.confirmDirty) {
-          form.validateFields(['confirm'], { force: true });
+            form.validateFields(['confirm'], { force: true });
         }
         callback();
     }
@@ -61,32 +62,38 @@ class Register extends React.Component {
     handleSubmit = (e) => {
         e.preventDefault();
         this.props.form.validateFieldsAndScroll((err, values) => {
-          if (!err) {
-            this.handleRegister(values);
-          }
+            if (!err) {
+                this.handleRegister(values);
+            }
         });
     }
 
-    handleRegister = (values) =>{
-        const {accounts, contract} = this.state;
-        const file_data = "{abcdefghijklmnopqrstuvwxyzabcde}";
+    handleRegister = (values) => {
+        const { accounts, contract } = this.state;
+        const file_data = "{}";
         let account = values.userName;
         let password = values.password;
-        let encryptedData = aesEncrypt(file_data,password);
-        console.log(encryptedData)
-        // console.log(account+"---"+password)
-        contract.methods.register(account,password,file_data).send({ from: accounts[0], gas: 200000 }).then((result)=>{
-            console.log(result)
-            let resultCode = result.events.RegisterEvent.returnValues[0];
-            let resultMsg = result.events.RegisterEvent.returnValues[1];
-            // console.log(resultCode+'----'+resultMsg)
-            if(resultCode==200){
-                console.log('注册成功')
-                //跳转到登录界面
-            }else{
-                // console.log(resultMsg)
-                message.info(resultMsg);
-            }
+        let encryptedPwd = sha256Encrypt(password, account);
+        let encryptedData = aesEncrypt(file_data, password);
+        // console.log('加密的文件树字符串'+encryptedData)
+        saveTextBlobOnIpfs(encryptedData).then((hash) => {
+            let dataHash = hash;
+            // console.log(account + "--" + encryptedPwd + '--' + dataHash)
+            contract.methods.register(account, encryptedPwd, dataHash).send({ from: accounts[0], gas: 1000000 }).then((result) => {
+                console.log(result)
+                let resultCode = result.events.RegisterEvent.returnValues[0];
+                let resultMsg = result.events.RegisterEvent.returnValues[1];
+                // console.log(resultCode+'----'+resultMsg)
+                if (resultCode == 200) {
+                    console.log('注册成功')
+                    //跳转到登录界面
+                    alert('注册成功')
+                    window.location.href='/'
+                } else {
+                    // console.log(resultMsg)
+                    message.info(resultMsg);
+                }
+            })
         })
     }
 
@@ -112,7 +119,7 @@ class Register extends React.Component {
                             {getFieldDecorator('password', {
                                 rules: [{ required: true, message: '请输入密码!' }, {
                                     validator: this.validateToNextPassword,
-                                  }],
+                                }],
                             })(
                                 <Input prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} type="password" placeholder="Password" />
                             )}
@@ -121,7 +128,7 @@ class Register extends React.Component {
                             {getFieldDecorator('confirm', {
                                 rules: [{ required: true, message: '请再次输入密码!' }, {
                                     validator: this.compareToFirstPassword,
-                                  }],
+                                }],
                             })(
                                 <Input prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} onBlur={this.handleConfirmBlur} type="password" placeholder="Repeat Password" />
                             )}

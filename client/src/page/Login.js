@@ -2,10 +2,12 @@ import React from "react";
 import getWeb3 from "../utils/getWeb3";
 import FileSystemContract from "../contracts/FileSystem.json";
 import {
-    Form, Icon, Input, Button,
+    Form, Icon, Input, Button, message
 } from 'antd';
 import '../../node_modules/antd/dist/antd.css';
 import '../style/Login.css';
+import {getTextFromIpfs} from "../utils/ipfsIOUtil";
+import { aesDecrypt } from '../utils/cipherUtil.js';
 
 class Login extends React.Component {
     state = {
@@ -46,10 +48,18 @@ class Login extends React.Component {
                         throw new Error('账号或密码错误');
                     }else{
                         //使用密码解密
-                        console.log('未实现解密')
+                        getTextFromIpfs(resultData).then((response)=>{
+                            let decode = aesDecrypt(response,values.password);
+                            //解密成功
+                            console.log(decode)
+                        }).catch((err)=>{
+                            console.log('解密失败');
+                            message.info('账号或密码错误');
+                        })
                     }
                 }catch(e){
-                    console.log(e)
+                    message.info('账号或密码错误');
+                    console.log(e);
                 }
             }
         })
