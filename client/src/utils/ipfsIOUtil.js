@@ -29,6 +29,20 @@ function getTextFromIpfs(dataHash){
     })
 }
 
+function saveFileOnIpfs(reader){
+    return new Promise(function(resolve,reject){
+        let buffer = Buffer.from(reader.result);
+        ipfs.add(buffer).then((response)=>{
+            console.log(response)
+            resolve(response[0].hash);
+        }).catch((err)=>{
+            console.error(err);
+            reject(err);
+        })
+    })
+}
+
+
 function utf8ArrayToStr(array){
     var out,i,len,c;
     var char2,char3;
@@ -57,4 +71,4 @@ function utf8ArrayToStr(array){
     return out;
 }
 
-export {saveTextBlobOnIpfs, getTextFromIpfs}
+export {saveTextBlobOnIpfs, getTextFromIpfs, saveFileOnIpfs}
