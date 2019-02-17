@@ -10,11 +10,13 @@ export default class UserCenter extends React.Component {
 
     state = {
         // file_tree_data: window.sessionStorage.getItem("file_tree_json")
-        file_tree_data: '{"test.txt":"asdasd"}'
+        file_tree_data: '{"test.txt":"asdasd"}',
+        preview_file_hash:''
     };
 
     onSelect = (comp) => {
-        console.log(comp)
+        console.log('更新'+comp[0])
+        this.setState({preview_file_hash:comp[0]})
     };
 
     onExpand = () => {
@@ -84,7 +86,7 @@ export default class UserCenter extends React.Component {
                         </DirectoryTree>
                     </div>
                     <div id='preview'>
-
+                        <iframe src={'http://localhost:8080/ipfs/QmXDX2HWHTzLf1N4D26k4rehaSHr3xR5uATHrCw62x94PM'} width='100%' height='100%'></iframe>
                     </div>
                 </div>
             </div>

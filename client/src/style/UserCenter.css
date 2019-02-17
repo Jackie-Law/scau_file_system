@@ -1,7 +1,13 @@
 #file-tree{
-    width:30%;
+    width:25%;
+    height: 100%;
     float: left;
 }
+#root,#route,#app,#container,#content-body{
+    height: 100%
+}
 #preview{
-    width:70%;
+    width:75%;
+    height: 100%;
+    float: right;
 }
