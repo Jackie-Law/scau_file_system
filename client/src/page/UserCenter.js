@@ -75,7 +75,6 @@ export default class UserCenter extends React.Component {
                             </Upload>
                         </Menu.Item>
                     </Menu>
-                    {/* <input ref={(ref) => {this.fileUploadRef = ref}} type='file' hidden/> */}
                 </div>
                 <div id='content-body'>
                     <div id='file-tree'>
@@ -86,7 +85,7 @@ export default class UserCenter extends React.Component {
                         </DirectoryTree>
                     </div>
                     <div id='preview'>
-                        <iframe src={'http://localhost:8080/ipfs/QmXDX2HWHTzLf1N4D26k4rehaSHr3xR5uATHrCw62x94PM'} width='100%' height='100%'></iframe>
+                        <img src={'http://localhost:8080/ipfs/QmXDX2HWHTzLf1N4D26k4rehaSHr3xR5uATHrCw62x94PM'} width='100%' height='auto'></img>
                     </div>
                 </div>
             </div>
