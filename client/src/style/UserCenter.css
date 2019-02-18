@@ -1,20 +1,13 @@
-html,body{
+#file-tree{
+    width:25%;
     height: 100%;
+    float: left;
 }
-#route{
-    height: 100%;
+#root,#route,#app,#container,#content-body{
+    height: 100%
 }
-#root{
+#preview{
+    width:75%;
     height: 100%;
-}
-#app{
-    height: 100%;
-}
-#container{
-    height: 100%;
-}
-.file-tree{
-    width: 20%;
-    height: 100%;
-    overflow: scroll;
+    float: right;
 }
