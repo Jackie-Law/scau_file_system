@@ -1,5 +1,5 @@
 import React from "react";
-import { Tree, Menu, Icon, Upload, Button, message } from 'antd';
+import { Tree, Menu, Icon, Upload, Button, Divider } from 'antd';
 import '../style/UserCenter.css'
 import { saveFileOnIpfs } from '../utils/ipfsIOUtil';
 const DirectoryTree = Tree.DirectoryTree;
@@ -85,7 +85,7 @@ export default class UserCenter extends React.Component {
                         </DirectoryTree>
                     </div>
                     <div id='preview'>
-                        <img src={'http://localhost:8080/ipfs/QmXDX2HWHTzLf1N4D26k4rehaSHr3xR5uATHrCw62x94PM'} width='100%' height='auto'></img>
+                        <iframe width='100%' height="100%" src="http://localhost:8080/ipfs/QmeaSGiKMHo2S8ZtfnS5LkrXE9Lavxr8A6RyEBHCoGnpyy"></iframe>
                     </div>
                 </div>
             </div>
