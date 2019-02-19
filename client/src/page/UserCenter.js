@@ -1,5 +1,5 @@
 import React from "react";
-import { Tree, Menu, Icon, Upload, Button, Divider } from 'antd';
+import { Tree, Menu, Icon, Upload, Button } from 'antd';
 import '../style/UserCenter.css'
 import { saveFileOnIpfs } from '../utils/ipfsIOUtil';
 const DirectoryTree = Tree.DirectoryTree;
@@ -10,8 +10,7 @@ export default class UserCenter extends React.Component {
 
     state = {
         // file_tree_data: window.sessionStorage.getItem("file_tree_json")
-        file_tree_data: '{"test.txt":"asdasd"}',
-        preview_file_hash:''
+        file_tree_data: '{"test.txt":"asdasd"}'
     };
 
     onSelect = (comp) => {

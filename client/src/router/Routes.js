@@ -3,8 +3,7 @@ import { Route, Switch, Redirect } from 'react-router-dom';
 import App from "../App";
 import Login from "../page/Login";
 import Register from "../page/Register";
-import UserCenter from "../page/UserCenter";
-import TestPage from "../page/testPage";
+import Home from "../page/Home";
 
 const Root = () => (
     <div id="route">
@@ -13,9 +12,8 @@ const Root = () => (
                 <App>
                     <Switch>
                         <Route path="/" exact component={Login}/>
-                        <Route path="/user_center" exact component={UserCenter}/>
+                        <Route path="/home" exact component={Home}/>
                         <Route path="/register" exact component={Register}/>
-                        <Route path="/test" exact component={TestPage}/>
                         <Route render={() => <Redirect to="/" />} />
                     </Switch>
                 </App>
