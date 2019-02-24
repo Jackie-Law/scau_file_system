@@ -53,7 +53,6 @@ class Login extends React.Component {
                             //解密成功
                             window.sessionStorage.setItem('file_tree_json',decode);
                             window.sessionStorage.setItem('account',values.userName);
-                            console.log('存起来的密码'+ values.password)
                             window.sessionStorage.setItem('password',values.password);
                             //跳转到用户树页面
                             window.location.href = '/home';

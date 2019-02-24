@@ -78,7 +78,7 @@ class Register extends React.Component {
         // console.log('加密的文件树字符串'+encryptedData)
         saveTextBlobOnIpfs(encryptedData).then((hash) => {
             let dataHash = hash;
-            console.log(account + "--" + encryptedPwd + '--' + dataHash)
+            // console.log(account + "--" + encryptedPwd + '--' + dataHash)
             contract.methods.register(account, encryptedPwd, dataHash).send({ from: accounts[0], gas: 1000000 }).then((result) => {
                 console.log(result)
                 let resultCode = result.events.RegisterEvent.returnValues[0];
