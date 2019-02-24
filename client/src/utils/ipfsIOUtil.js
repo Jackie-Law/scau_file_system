@@ -44,16 +44,28 @@ function saveFileOnIpfs(reader) {
 
 function getFileFromIpfs(fileHash) {
     return new Promise(function (resolve, reject) {
-        let stream = ipfs.getReadableStream(fileHash);
-        stream.on('data', (file) => {
-            if (file.type !== 'dir') {
-                file.content.on('data', (data) => {
-                    // console.log(data)
-                    resolve(data)
-                })
-                file.content.resume()
-            }
-        })
+        try {
+            let stream = ipfs.getReadableStream(fileHash);
+            let resultArr = new Uint8Array(0);
+            stream.on('data', (file) => {
+                if (file.type !== 'dir') {
+                    file.content.on('data', (data) => {
+                        console.log(data)
+                        let tmpArr = new Uint8Array(resultArr.length + data.length)
+                        tmpArr.set(data, resultArr.length)
+                        resultArr = tmpArr;
+                        console.log(resultArr)
+                    })
+                    file.content.resume()
+                }
+            })
+            stream.on('end', () => {
+                console.log(resultArr)
+                resolve(resultArr)
+            })
+        } catch (err) {
+            reject(err)
+        }
     })
 
 }

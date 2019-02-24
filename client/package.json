@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "antd": "^3.13.2",
+    "axios": "^0.18.0",
     "ipfs-http-client": "^29.1.1",
     "npm": "^6.4.0",
     "react": "^16.6.3",

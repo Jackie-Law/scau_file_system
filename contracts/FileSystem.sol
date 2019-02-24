@@ -3,11 +3,11 @@ contract FileSystem {
 
     //账户->文件树密文(使用密码可逆加密的字符串)
     mapping(string => string) private user_data_map;
-    //账户->密码MD5
+    //账户->密码sha256
     mapping(string => string) private user_pwd_map;
     
     event RegisterEvent(int code, string msg);
-
+    event UpdateEvent(int code, string msg);
     /* 
      * 方法：判断账号是否存在
      * 参数：账号(string)
@@ -56,8 +56,10 @@ contract FileSystem {
           string memory pwd = user_pwd_map[account];
           if(keccak256(bytes(pwd))==keccak256(bytes(password))){
               user_data_map[account] = file_data;
+              emit UpdateEvent(200,"更新成功");
               return (200,"更新成功");
           }else{
+              emit UpdateEvent(500,"更新失败");
               return (500,"密码错误");
           }
       }
