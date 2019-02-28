@@ -1,6 +1,7 @@
 import React from "react";
 import getWeb3 from "../utils/getWeb3";
 import FileSystemContract from "../contracts/FileSystem.json";
+import BackupContract from "../contracts/BackupContract.json";
 import { saveFileOnIpfs } from '../utils/ipfsIOUtil';
 import { sha256Encrypt, aesEncrypt } from '../utils/cipherUtil.js';
 import { getNowFormatDate } from '../utils/commonUtil';
@@ -16,6 +17,7 @@ export default class Home extends React.Component {
     state = {
         web3: null,
         contract: null,
+        backupContract: null,
         account: window.sessionStorage.getItem('account'),
         password: window.sessionStorage.getItem('password'),
         file_tree_data: window.sessionStorage.getItem("file_tree_json")
@@ -27,12 +29,17 @@ export default class Home extends React.Component {
             const accounts = await web3.eth.getAccounts();
             const networkId = await web3.eth.net.getId();
             const deployedNetwork = FileSystemContract.networks[networkId];
+            const deployedNetworkOfBackup = BackupContract.networks[networkId];
             const instance = new web3.eth.Contract(
                 FileSystemContract.abi,
                 deployedNetwork && deployedNetwork.address,
             );
+            const backupInstance = new web3.eth.Contract(
+                BackupContract.abi,
+                deployedNetworkOfBackup && deployedNetworkOfBackup.address,
+            );
             this.setState({
-                web3, accounts, contract: instance
+                web3, accounts, contract: instance, backupContract: backupInstance
             })
         } catch (error) {
             alert(
@@ -52,7 +59,7 @@ export default class Home extends React.Component {
                     reader.readAsArrayBuffer(file);
                     reader.onloadend = (e) => {
                         saveFileOnIpfs(reader).then((hash) => {
-                            const { accounts, contract, account, password } = this.state;
+                            const { accounts, contract, account, password, backupContract } = this.state;
                             let file_tree_obj = JSON.parse(this.state.file_tree_data);
                             //TODO 判断是否已经存有该文件
                             if (file_tree_obj[hash] == null || file_tree_obj[hash] == undefined) {
@@ -66,6 +73,15 @@ export default class Home extends React.Component {
                                 let file_tree_json = JSON.stringify(file_tree_obj);
                                 let encryptedData = aesEncrypt(file_tree_json, password);
                                 let encryptedPwd = sha256Encrypt(password, account);
+                                backupContract.methods.postBackupOrder(hash).send({ from: accounts[0], gas: 1000000 }).then((result)=>{
+                                    let resultCode = result.events.postEvent.returnValues[0];
+                                    let resultMsg = result.events.postEvent.returnValues[1];
+                                    if(resultCode==200){
+                                        console.log('发布冗余成功');
+                                    }else{
+                                        console.log('发布冗余失败');
+                                    }
+                                })
                                 saveTextBlobOnIpfs(encryptedData).then((hash) => {
                                     contract.methods.update(account, encryptedPwd, hash).send({ from: accounts[0], gas: 1000000 }).then((result) => {
                                         console.log(result)
@@ -84,6 +100,7 @@ export default class Home extends React.Component {
                                 console.log('已存有该文件')
                             }
                         }).catch((err) => {
+                            console.error(err)
                             console.log('备份文件失败')
                         })
                     }
