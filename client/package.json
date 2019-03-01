@@ -18,8 +18,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "startAsBackupNode": "node ./src/utils/backup.js",
-    "startAsFullNode": "react-scripts start&node ./src/utils/backup.js"
+    "startAsBackupNode": "node ./src/start.js",
+    "startAsFullNode": "react-scripts start&node ./src/start.js"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -29,5 +29,9 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ]
+  ],
+  "devDependencies": {
+    "babel-preset-env": "^1.7.0",
+    "babel-register": "^6.26.0"
+  }
 }
