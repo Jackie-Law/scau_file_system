@@ -42,7 +42,7 @@ contract FileSystem {
     /*
      * 方法：登录
      * 参数：账号、密码
-     * 返回值：DES加密的 文件树字符串
+     * 返回值：文件树字符串Hash
      */
      function login(string memory account) public view returns(int,string memory){
          return (200,user_data_map[account]);
